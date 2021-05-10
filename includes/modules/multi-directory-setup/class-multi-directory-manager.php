@@ -338,32 +338,36 @@ class Multi_Directory_Manager
     // save_post_type_data
     public function save_post_type_data()
     {
-        /* wp_send_json([
-            'single_listings_contents' => self::maybe_json( $_POST['single_listings_contents'] ),
-            'status' => [
-                'success' => false,
-                'status_log' => [
-                    'debugging' => [
-                        'type' => 'error',
-                        'message' => 'Name is missing',
-                    ],
-                ],
-            ],
-        ], 200 ); */
+        $status = ['success' => false];
 
         if ( empty( $_POST['name'] ) ) {
-            wp_send_json([
-                'status' => [
-                    'success' => false,
-                    'status_log' => [
-                        'name_is_missing' => [
-                            'type' => 'error',
-                            'message' => __( 'Name is missing', 'directorist' ),
-                        ],
-                    ],
-                ],
-            ], 200);
+            $status['status_log']['name_is_missing'] = [
+                'type'    => 'error',
+                'message' => __( 'Name is missing', 'directorist' ),
+            ];
+
+            wp_send_json( [ 'status' => $status ] );
         }
+
+        if ( ! isset( $_POST['nonce'] ) ) {
+            $status['status_log']['invalid_request'] = [
+                'type'    => 'error',
+                'message' => __( 'Invalid request', 'directorist' ),
+            ];
+
+            wp_send_json( [ 'status' => $status ] );
+        }
+
+        if ( ! wp_verify_nonce( $_POST['nonce'], 'directorist-update-builder-data' ) ) {
+            $status['status_log']['invalid_nonce'] = [
+                'type'    => 'error',
+                'message' => __( 'Invalid nonce', 'directorist' ),
+            ];
+
+            wp_send_json( [ 'status' => $status ] );
+        }
+
+        $new_nonce = wp_create_nonce( 'directorist-update-builder-data' );
 
         $term_id        = ( ! empty( $_POST['listing_type_id'] ) ) ? $_POST['listing_type_id'] : 0;
         $directory_name = $_POST['name'];
@@ -382,6 +386,8 @@ class Multi_Directory_Manager
             'directory_name' => $directory_name,
             'fields_value'   => $fields,
         ]);
+
+        $add_directory['nonce'] = $new_nonce;
 
         if ( ! $add_directory['status']['success'] ) {
             wp_send_json( $add_directory );
@@ -4738,7 +4744,10 @@ class Multi_Directory_Manager
         self::$config = [
             'submission' => [
                 'url' => admin_url('admin-ajax.php'),
-                'with' => [ 'action' => 'save_post_type_data' ],
+                'with' => [ 
+                    'action' => 'save_post_type_data',
+                    'nonce'  => wp_create_nonce( 'directorist-update-builder-data' ),
+                ],
             ],
             'fields_group' => [
                 'general_config' => [

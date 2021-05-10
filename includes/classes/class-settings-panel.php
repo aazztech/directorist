@@ -311,23 +311,30 @@ SWBD;
         // handle_save_settings_data_request
         public function handle_save_settings_data_request()
         {
-            // wp_send_json([
-            //     'status' => false,
-            //     'active_gateways' => $_POST['active_gateways'],
-            //     'active_gateways_decoded' => $this->maybe_json( $_POST['active_gateways'] ),
-            //     'active_gateways_decoded_type' => gettype( $this->maybe_json( $_POST['active_gateways'] ) ),
-            //     'status_log' => [
-            //         'name_is_missing' => [
-            //             'type' => 'error',
-            //             'message' => 'Debugging',
-            //         ],
-            //     ],
-            // ], 200 );
-
-
             $status = [ 'success' => false, 'status_log' => [] ];
             $field_list = ( ! empty( $_POST['field_list'] ) ) ? $this->maybe_json( $_POST['field_list'] ) : [];
-            
+
+            if ( ! isset( $_POST['nonce'] ) ) {
+                $status['status_log'] = [
+                    'type'    => 'error',
+                    'message' => __( 'Invalid request', 'directorist' ),
+                ];
+
+                wp_send_json( [ 'status' => $status ] );
+            }
+
+            if ( ! wp_verify_nonce( $_POST['nonce'], 'directorist-update-settings' ) ) {
+                $status['status_log'] = [
+                    'type'    => 'error',
+                    'message' => __( 'Invalid nonce', 'directorist' ),
+                ];
+
+                wp_send_json( [ 'status' => $status ] );
+            }
+
+            $new_nonce = wp_create_nonce( 'directorist-update-settings' );
+            $status['nonce'] = $new_nonce;
+
             // If field list is empty
             if ( empty( $field_list ) || ! is_array( $field_list ) ) {
                 $status['status_log'] = [
@@ -346,6 +353,7 @@ SWBD;
             }
 
             $update_settings_options = $this->update_settings_options( $options );
+            $update_settings_options['nonce'] = $new_nonce;
 
             wp_send_json( $update_settings_options );
         }
@@ -5213,7 +5221,10 @@ Please remember that your order may be canceled if you do not make your payment 
                 'fields_theme' => 'butterfly',
                 'submission' => [
                     'url' => admin_url('admin-ajax.php'),
-                    'with' => [ 'action' => 'save_settings_data' ],
+                    'with' => [ 
+                        'action' => 'save_settings_data',
+                        'nonce'  => wp_create_nonce( 'directorist-update-settings' ),
+                    ],
                 ],
             ];
            

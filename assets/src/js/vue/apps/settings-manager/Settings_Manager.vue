@@ -344,11 +344,18 @@ export default {
             // Submit the form
             axios.post( submission_url, form_data )
                 .then( response => {
-                    // console.log( { response } );
+                    console.log( { response } );
 
                     self.form_is_processing        = false;
                     self.submit_button.is_disabled = false;
                     self.submit_button.label       = self.submit_button.label_default;
+
+                    if ( response.data.nonce ) {
+                        if ( typeof submission_with !== 'object' ) {
+                            submission_with = {};
+                        }
+                        submission_with.nonce = response.data.nonce;
+                    }
 
                     if ( response.data.status && response.data.status.status_log ) {
                         self.status_message = response.data.status.status_log;
