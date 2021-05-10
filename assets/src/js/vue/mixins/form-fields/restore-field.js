@@ -42,7 +42,7 @@ export default {
 
                 return;
             }
-        
+            
             let fields = {};
             for ( let field in this.restorData ) {
                 fields[ field ] = this.maybeJSON( this.restorData[ field ] );

@@ -202,7 +202,7 @@ export default new Vuex.Store({
 
     importFields: ( state, importing_fields ) => {
       for ( let field_key in importing_fields ) {
-        if ( typeof importing_fields[ field_key ] === 'undefined' ) { continue; }
+        if ( typeof state.fields[ field_key ] === 'undefined' ) { continue; }
 
         Vue.set( state.fields[ field_key ], 'value' , importing_fields[ field_key ] );
       }

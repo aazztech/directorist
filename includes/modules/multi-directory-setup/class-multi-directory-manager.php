@@ -214,7 +214,7 @@ class Multi_Directory_Manager
 
     // import_default_directory
     public function import_default_directory( array $args = [] ) {
-        $file = trailingslashit( dirname( ATBDP_FILE ) )  . 'admin/assets/sample-data/directory/directory.json';
+        $file = trailingslashit( dirname( ATBDP_FILE ) )  . 'assets/sample-data/directory/directory.json';
         if ( ! file_exists( $file ) ) { return; }
         $file_contents = file_get_contents( $file );
 
