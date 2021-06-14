@@ -4606,6 +4606,7 @@ class Multi_Directory_Manager
                             ]
                         ]
                     ],
+                    
                     'similar_listings' => [
                         'label' => __( 'Other Settings', 'directorist' ),
                         'sections' => [
