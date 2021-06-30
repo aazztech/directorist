@@ -1,0 +1,20 @@
+// Theme Mixins
+@mixin theme-primary {
+    color: $primary-text-color;
+    background-color: $primary-bg-color;
+}
+
+@mixin theme-primary-accent {
+    color: $primary-accent-text-color;
+    background-color: $primary-accent-bg-color;
+}
+
+@mixin theme-danger {
+    color: $danger-text-color;
+    background-color: $danger-bg-color;
+}
+
+@mixin theme-light {
+    color: $light-text-color;
+    background-color: $light-bg-color;
+}

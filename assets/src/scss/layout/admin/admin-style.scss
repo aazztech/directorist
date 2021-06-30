@@ -5233,8 +5233,7 @@ img.atbdp-file-info {
 
 
 // Base Style
-@import '../../base/general';
-@import '../../base/utility';
+@import '../../base/index';
 
 // Components
 // ----------------------------------
@@ -5249,10 +5248,12 @@ img.atbdp-file-info {
 @import '../../component/form';
 @import '../../component/button';
 @import '../../component/modal';
+@import '../../component/modal-primary';
 @import '../../component/badge';
 @import '../../component/checkbox-radio';
 @import '../../component/switch';
 @import '../../component/pureSearchSelect';
+@import '../../component/tab';
 
 @import './multi-directory-archive.scss';
 @import './multi-directory-builder.scss';

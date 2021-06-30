@@ -78,6 +78,11 @@ export default {
             if ( this.activeWidgetsIsUpdating ) { return; }
             this.sync();
         },
+
+        avilableWidgets() {
+            if ( this.activeWidgetsIsUpdating ) { return; }
+            this.sync();
+        },
     },
 
     computed: {

@@ -45,3 +45,17 @@ $link-hover-color: $primary;
 $box-shadow-sm: 0 5px 0.8px rgba(#a7b2c7, 0.1);
 $box-shadow: 0 5px 20px rgba(#a7b2c7, 0.3);
 // $box-shadow-lg: 0 1rem 3rem rgba($black, 0.175);
+
+// Theme Colors
+$primary-bg-color: #3E62F5;
+$primary-text-color: #fff;
+
+$primary-accent-bg-color: rgba(62, 98, 245, 0.1);
+$primary-accent-text-color: $primary-bg-color;
+$primary-accent-border-color: $primary-bg-color;
+
+$danger-bg-color: crimson;
+$danger-text-color: #fff;
+
+$light-bg-color: #f2f2f2;
+$light-text-color: #0a0a0a;

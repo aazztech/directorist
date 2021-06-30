@@ -69,6 +69,9 @@ export default {
         activeWidgetGroups() {
             this.filtereWidgetList();
         },
+        selectedWidgets() {
+            this.filtereWidgetList();
+        },
     },
 
     methods: {

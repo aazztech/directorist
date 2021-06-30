@@ -1,0 +1,86 @@
+// Tab
+// -------------------------------------
+.directorist-tab-menu {
+    display: flex;
+    margin-left: -5px;
+    margin-right: -5px;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+.directorist-tab-menu-item {
+    margin: 5px;
+    padding: 10px 25px;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: all ease-in-out 300ms;
+    @include theme-light;
+    &.active {
+        cursor: unset;
+        @include theme-primary;
+    }
+}
+
+.directorist-tab-menu-label {
+    white-space: nowrap;
+}
+
+.directorist-tab-contents {
+    margin-top: 10px;
+}
+
+.directorist-tab-content-item {
+    display: none;
+    &.active {
+        display: block;
+    }
+}
+
+// Popup Tooltip
+// -------------------------------------
+.directorist-has-popup-tooltip {
+    position: relative;
+}
+
+.directorist-popup-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    padding-bottom: 8px;
+    transform: translate(-50%, -100%);
+    &.active {
+        display: block;
+    }
+}
+
+.directorist-popup-tooltip-content {
+    padding: 10px;
+    border-radius: $border-radius;
+    color: rgb(14, 14, 14);
+    box-shadow: 0 0 4px rgba( 0, 0, 0, 0.2 );
+    background-color: #fff;
+}
+
+// Control bar
+// -------------------------------------
+.has-directorist-control-bar {
+    position: relative;
+    &:hover .directorist-control-bar {
+        display: flex;
+    }
+}
+
+.directorist-control-bar {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    flex-wrap: nowrap;
+    margin: 0 -2px;
+    padding-bottom: 5px;
+    transform: translate(0%, -100%);
+}
+
+.directorist-control-bar-item {
+    margin: 0 2px;
+}

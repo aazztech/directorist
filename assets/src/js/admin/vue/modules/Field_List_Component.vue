@@ -18,6 +18,10 @@ import helpers from './../mixins/helpers';
 
 export default {
     name: 'field-list-compnents',
+    model: {
+        prop: 'value',
+        event: 'update'
+    },
     mixins: [ helpers ],
     props: {
         root: {

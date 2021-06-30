@@ -150,3 +150,65 @@
     padding: 0 15px;
   }
 }
+
+// -------------------------------------
+.directorist-button {
+    margin-right: 5px;
+    margin-left: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 3px;
+    border: hidden;
+    cursor: pointer;
+    transition: all ease-in-out 300ms;
+    @include theme-light;
+}
+
+.directorist-button-sm {
+    margin-right: 2px;
+    margin-left: 2px;
+    padding: 5px 8px;
+    font-size: 11px;
+}
+
+.directorist-button-full {
+    display: flex;
+}
+
+.directorist-button-rounded {
+    border-radius: 30px;
+}
+
+.directorist-button-circle {
+    border-radius: 50%;
+}
+
+.directorist-button-primary-accent {
+    @include theme-primary-accent;
+    &:hover {
+        @include theme-primary;
+    }
+}
+
+.directorist-button-primary {
+    @include theme-primary;
+}
+
+.directorist-button-danger {
+    @include theme-danger;
+}
+
+.directorist-button-primary-hover {
+    &:hover {
+        @include theme-primary;
+    }
+}
+
+.directorist-button-danger-hover {
+    &:hover {
+        @include theme-danger;
+    }
+}

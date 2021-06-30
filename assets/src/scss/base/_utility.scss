@@ -60,12 +60,126 @@
     margin-bottom: 40px;
 }
 
+.directorist-mx-0 {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.directorist-mb-30 {
+    margin-bottom: 30px;
+}
+
+.directorist-space-top-30 {
+    margin-top: -30px;
+    padding-top: 30px;
+}
+
+.directorist-space-top-200 {
+    margin-top: -200px;
+    padding-top: 200px;
+}
+
 .directorist-pb-100 {
     padding-bottom: 100px;
 }
 
-// others
 .directorist-w-100 {
     width: 100% !important;
     max-width: 100% !important;
+}
+
+.directorist-text-center {
+    text-align: center;
+}
+
+.directorist-contents-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.directorist-card {
+    padding: 15px;
+    border: 1px solid #eaeaea;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+.directorist-addon-icon {
+    margin-right: 5px;
+}
+
+
+
+.general-list {
+    margin: 10px 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin: -5px;
+}
+
+.general-list-item {
+    list-style: none;
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 3px;
+    @include theme-light;
+}
+
+
+.directorist-sortable-list-item {
+    cursor: pointer;
+    position: relative;
+
+    &.is-dragging::before {
+        content: ' ';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background-color: #E0ECF9;
+        z-index: 999;
+    }
+}
+
+.directorist-sortable-list-item-drop-prepend-area,
+.directorist-sortable-list-item-drop-append-area {
+    position: absolute;
+}
+
+.directorist-sortable-list-item-drop-prepend-area {
+    top: 0;
+    bottom: 50%;
+    right: -100%;
+    left: -100%;
+    background-color: rgba(153, 112, 51, 0.178);
+    &.drop-horizontal {
+        top: -100%;
+        bottom: -100%;
+        left: 0;
+        right: 50%;
+    }
+
+    &.drag-enter {
+        background-color: rgba(153, 112, 51, 0.452);
+    }
+}
+.directorist-sortable-list-item-drop-append-area {
+    top: 50%;
+    bottom: -5px;
+    right: -100%;
+    left: -100%;
+    background-color: rgba(102, 51, 153, 0.178);
+    &.drop-horizontal {
+        top: -100%;
+        bottom: -100%;
+        right: 0;
+        left: 50%;
+    }
+    &.drag-enter {
+        background-color: rgba(102, 51, 153, 0.5);
+    }
 }
