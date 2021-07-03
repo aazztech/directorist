@@ -4,9 +4,9 @@
   "description": "A comprehensive solution to create professional looking directory site of any kind. Like Yelp, Foursquare, etc.",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --config webpack.dev.js",
-    "dev-vue": "webpack --config webpack.dev.vue.js",
-    "prod": "node pot.js && webpack --config webpack.prod.js",
+    "dev": "webpack --config webpack.dev.js --watch",
+    "dev-all": "webpack --config webpack.dev.all.js --watch",
+    "prod": "node pot.js && webpack --config webpack.dev.all.js && webpack --config webpack.prod.js",
     "blocks:build": "wp-scripts build ./includes/gutenberg/src/index.js --output-path=includes/gutenberg/assets"
   },
   "repository": {
