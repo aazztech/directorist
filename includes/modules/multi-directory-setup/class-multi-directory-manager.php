@@ -179,11 +179,13 @@ class Multi_Directory_Manager
         $need_import_default = ( ! $has_multidirectory && ! ( $has_listings || $has_custom_fields ) ) ? true : false;
 
         if ( $need_migration ) {
+            $this->prepare_settings();
             self::$migration->migrate();
             return;
         }
 
         if ( apply_filters( 'atbdp_import_default_directory', $need_import_default ) ) {
+            $this->prepare_settings();
             $this->import_default_directory();
         }
     }
@@ -202,6 +204,7 @@ class Multi_Directory_Manager
             $args[ 'term_id' ] = $general_directory['term_id'];
         }
         
+        $this->prepare_settings();
         $migration_status = self::$migration->migrate( $args );
         
         $status = [
@@ -292,6 +295,8 @@ class Multi_Directory_Manager
             $directory_name = '';
         }
 
+        $this->prepare_settings();
+        
         $add_directory = self::add_directory([ 
             'term_id'        => $term_id,
             'directory_name' => $directory_name,
@@ -338,19 +343,6 @@ class Multi_Directory_Manager
     // save_post_type_data
     public function save_post_type_data()
     {
-        /* wp_send_json([
-            'single_listings_contents' => self::maybe_json( $_POST['single_listings_contents'] ),
-            'status' => [
-                'success' => false,
-                'status_log' => [
-                    'debugging' => [
-                        'type' => 'error',
-                        'message' => 'Name is missing',
-                    ],
-                ],
-            ],
-        ], 200 ); */
-
         if ( empty( $_POST['name'] ) ) {
             wp_send_json([
                 'status' => [
@@ -376,6 +368,8 @@ class Multi_Directory_Manager
                 $fields[ $field_key ] = $_POST[$field_key];
             }
         }
+
+        $this->prepare_settings();
 
         $add_directory = self::add_directory([
             'term_id'        => $term_id,
@@ -4844,25 +4838,26 @@ class Multi_Directory_Manager
         $action = isset( $_GET['action'] ) ? $_GET['action'] : '';
         $listing_type_id = 0;
 
-        if ( ! $enable_multi_directory || ( ! empty( $action ) && ( 'edit' === $action ) && ! empty( $_REQUEST['listing_type_id'] ) ) ) {
-            $listing_type_id = ( ! $enable_multi_directory ) ? default_directory_type() : $_REQUEST['listing_type_id'];
-            $this->update_fields_with_old_data( $listing_type_id );
-        }
-
         $data = [
             'add_new_link' => admin_url('edit.php?post_type=at_biz_dir&page=atbdp-directory-types&action=add_new'),
         ];
 
-        $cptm_data = [
-            'fields'  => self::$fields,
-            'layouts' => self::$layouts,
-            'config'  => self::$config,
-            'options' => $this->options,
-            'id'      => $listing_type_id,
-        ];
-        
-
         if ( ! $enable_multi_directory || ( ! empty( $action ) && ('edit' === $action || 'add_new' === $action ) ) ) {
+            $this->prepare_settings();
+
+            if ( ! empty( $_REQUEST['listing_type_id'] ) ) {
+                $listing_type_id = ( ! $enable_multi_directory ) ? default_directory_type() : $_REQUEST['listing_type_id'];
+                $this->update_fields_with_old_data( $listing_type_id );
+            }
+
+            $cptm_data = [
+                'fields'  => self::$fields,
+                'layouts' => self::$layouts,
+                'config'  => self::$config,
+                'options' => $this->options,
+                'id'      => $listing_type_id,
+            ];
+            
             wp_localize_script('directorist-multi-directory-builder', 'cptm_data', $cptm_data);
             atbdp_load_admin_template('post-types-manager/edit-listing-type', $data);
             return;
@@ -4990,8 +4985,6 @@ class Multi_Directory_Manager
             ],
             'show_ui' => false,
         ]);
-
-        $this->prepare_settings();
     }
 
     /**

@@ -14,279 +14,291 @@ if ( ! class_exists('ATBDP_Settings_Panel') ) {
 		// run
 		public function run()
 		{
-			add_action( 'init', [$this, 'initial_setup'] );
-			add_action( 'init', [$this, 'prepare_settings'] );
-
-			add_action( 'admin_menu', [$this, 'add_menu_pages'] );
+            add_action( 'admin_menu', [$this, 'add_menu_pages'] );
 			add_action( 'wp_ajax_save_settings_data', [ $this, 'handle_save_settings_data_request' ] );
-			$this->extension_url = sprintf("<a target='_blank' href='%s'>%s</a>", esc_url(admin_url('edit.php?post_type=at_biz_dir&page=atbdp-extension')), __('Checkout Awesome Extensions', 'directorist'));
+
+            add_filter( 'atbdp_listing_type_settings_field_list', [ $this, 'register_setting_fields' ] );
+			
+            $this->extension_url = sprintf("<a target='_blank' href='%s'>%s</a>", esc_url(admin_url('edit.php?post_type=at_biz_dir&page=atbdp-extension')), __('Checkout Awesome Extensions', 'directorist'));
 		}
 
-		// initial_setup
-		public function initial_setup() {
-			add_filter( 'atbdp_listing_type_settings_field_list', function( $fields ) {
+        public static function in_settings_page() {
+            if ( ! is_admin() ) {
+                return false;
+            }
 
-				$fields['script_debugging'] = [
-					'type'  => 'toggle',
-					'label' => 'Script debugging',
-					'description' => __( 'Loads unminified .css, .js files', 'directorist' ),
-				];
+            if ( ! isset( $_REQUEST['post_type'] ) && ! isset( $_REQUEST['page'] ) ) {
+                return false;
+            }
 
-				$fields['import_settings'] = [
-					'type'         => 'import',
-					'label'        => 'Import Settings',
-					'button-label' => 'Import',
-				];
+            if ( 'at_biz_dir' !== $_REQUEST['post_type'] && 'atbdp-settings' !== $_REQUEST['page'] ) {
+                return false;
+            }
 
-				$fields['export_settings'] = [
-					'type'             => 'export',
-					'label'            => 'Export Settings',
-					'button-label'     => 'Export',
-					'export-file-name' => 'directory-settings',
-				];
+            return true;
+        }
 
-				$fields['restore_default_settings'] = [
-					'type'         => 'restore',
-					'label'        => 'Restore Default Settings',
-					'button-label' => 'Restore',
-					'restor-data'  => $this->get_simple_data_content( [ 'path' => 'directory/directory-settings.json' ] ),
-				];
+        // register_setting_fields
+        public function register_setting_fields( $fields = [] ) {
+            $fields['script_debugging'] = [
+                'type'  => 'toggle',
+                'label' => 'Script debugging',
+                'description' => __( 'Loads unminified .css, .js files', 'directorist' ),
+            ];
 
-				$fields['enable_multi_directory'] = [
-					'type'  => 'toggle',
-					'label' => 'Enable Multi Directory',
-					'value' => false,
-					'confirm-before-change' => true,
-					'confirmation-modal' => [
-						'show-model-header' => false
-					],
-					'data-on-change' => [
-						'action' => 'updateData',
-						'args'   => [ 'reload_after_save' => true ]
-					],
-					'componets' => [
-						'link' => [
-							'label' => __( 'Start Building Directory', 'directorist' ),
-							'type'  => 'success',
-							'url'   => admin_url( 'edit.php?post_type=at_biz_dir&page=atbdp-directory-types' ),
-							'show'  => get_directorist_option( 'enable_multi_directory', false ),
-						]
-					]
-				];
+            $fields['import_settings'] = [
+                'type'         => 'import',
+                'label'        => 'Import Settings',
+                'button-label' => 'Import',
+            ];
 
-				$fields['single_listing_slug_with_directory_type'] = [
-					'type'  => 'toggle',
-					'label' => __('Listing Slug with Directory Type', 'directorist'),
-					'value' => get_directorist_option( 'enable_multi_directory' ),
-				];
+            $fields['export_settings'] = [
+                'type'             => 'export',
+                'label'            => 'Export Settings',
+                'button-label'     => 'Export',
+                'export-file-name' => 'directory-settings',
+            ];
 
-				$fields['regenerate_pages'] = [
-					'type'                       => 'ajax-action',
-					'action'                     => 'atbdp_upgrade_old_pages',
-					'label'                      => 'Upgrade/Regenerate Pages',
-					'button-label'               => 'Regenerate Pages',
-					'button-label-on-processing' => '<i class="fas fa-circle-notch fa-spin"></i> Processing',
-					'data'                       => [],
-				];
+            $fields['restore_default_settings'] = [
+                'type'         => 'restore',
+                'label'        => 'Restore Default Settings',
+                'button-label' => 'Restore',
+                'restor-data'  => $this->get_simple_data_content( [ 'path' => 'directory/directory-settings.json' ] ),
+            ];
 
-				$fields['sanitize_builder_data'] = [
-					'type'                       => 'ajax-action',
-					'action'                     => 'directorist_sanitize_builder_data_structure',
-					'label'                      => 'Sanitize Builder Data',
-					'button-label'               => 'Sanitize Builder Data',
-					'button-label-on-processing' => '<i class="fas fa-circle-notch fa-spin"></i> Processing',
-					'data'                       => [],
-				];
+            $fields['enable_multi_directory'] = [
+                'type'  => 'toggle',
+                'label' => 'Enable Multi Directory',
+                'value' => false,
+                'confirm-before-change' => true,
+                'confirmation-modal' => [
+                    'show-model-header' => false
+                ],
+                'data-on-change' => [
+                    'action' => 'updateData',
+                    'args'   => [ 'reload_after_save' => true ]
+                ],
+                'componets' => [
+                    'link' => [
+                        'label' => __( 'Start Building Directory', 'directorist' ),
+                        'type'  => 'success',
+                        'url'   => admin_url( 'edit.php?post_type=at_biz_dir&page=atbdp-directory-types' ),
+                        'show'  => get_directorist_option( 'enable_multi_directory', false ),
+                    ]
+                ]
+            ];
 
-				$users = get_users([ 'role__not_in' => 'Administrator' ]); // Administrator | Subscriber
-				$recipient = [];
+            $fields['single_listing_slug_with_directory_type'] = [
+                'type'  => 'toggle',
+                'label' => __('Listing Slug with Directory Type', 'directorist'),
+                'value' => get_directorist_option( 'enable_multi_directory' ),
+            ];
 
-				if ( ! empty( $users ) ) {
-					foreach ( $users as $user ) {
-						$recipient[] = [
-							'value' => $user->user_email,
-							'label' => ( ! empty( $user->display_name ) ) ? $user->display_name : $user->user_nicename,
-						];
-					}
-				}
+            $fields['regenerate_pages'] = [
+                'type'                       => 'ajax-action',
+                'action'                     => 'atbdp_upgrade_old_pages',
+                'label'                      => 'Upgrade/Regenerate Pages',
+                'button-label'               => 'Regenerate Pages',
+                'button-label-on-processing' => '<i class="fas fa-circle-notch fa-spin"></i> Processing',
+                'data'                       => [],
+            ];
 
-				$fields['announcement'] = [
-					'type'                       => 'ajax-action',
-					'action'                     => 'atbdp_send_announcement',
-					'label'                      => '',
-					'button-label'               => 'Send',
-					'button-label-on-processing' => '<i class="fas fa-circle-notch fa-spin"></i> Sending',
-					'option-fields' => [
-						'to' => [
-							'type' => 'select',
-							'label' => 'To',
-							'options' => [
-								[ 'value' => 'all_user', 'label' => 'All User' ],
-								[ 'value' => 'selected_user', 'label' => 'Selected User' ],
-							],
-							'value' => 'all_user',
-						],
-						'recipient' => [
-							'type'    => 'checkbox',
-							'label'   => 'Recipients',
-							'options' => $recipient,
-							'value'   => '',
-							'show-if' => [
-								'where' => "self.to",
-								'conditions' => [
-									['key' => 'value', 'compare' => '=', 'value' => 'selected_user'],
-								],
-							],
-						],
-						'subject' => [
-							'type'  => 'text',
-							'label' => 'Subject',
-							'value' => '',
-						],
-						'message' => [
-							'type'        => 'textarea',
-							'label'       => 'Message',
-							'description' => 'Maximum 400 characters are allowed',
-							'value'       => '',
-						],
-						'expiration' => [
-							'type'  => 'range',
-							'min'   => '0',
-							'max'   => '365',
-							'label' => 'Expires in Days',
-							'value' => 0,
-						],
-						'send_to_email' => [
-							'type'  => 'toggle',
-							'label' => 'Send a copy to email',
-							'value' => true,
-						],
-					],
-					'value' => '',
-					'save-option-data' => false,
-				];
+            $fields['sanitize_builder_data'] = [
+                'type'                       => 'ajax-action',
+                'action'                     => 'directorist_sanitize_builder_data_structure',
+                'label'                      => 'Sanitize Builder Data',
+                'button-label'               => 'Sanitize Builder Data',
+                'button-label-on-processing' => '<i class="fas fa-circle-notch fa-spin"></i> Processing',
+                'data'                       => [],
+            ];
 
-				$fields['listing_import_button'] = [
-					'type'            => 'button',
-					'url'             => admin_url( 'edit.php?post_type=at_biz_dir&page=tools' ),
-					'open-in-new-tab' => true,
-					'label'           => __( 'Import Listings', 'directorist' ),
-					'button-label'    => __( 'Run Importer', 'directorist' ),
-				];
+            $users = get_users([ 'role__not_in' => 'Administrator' ]); // Administrator | Subscriber
+            $recipient = [];
 
-				$fields['listing_export_button'] = [
-					'type'             => 'export-data',
-					'label'            => __( 'Export Listings', 'directorist' ),
-					'button-label'     => __( 'Export', 'directorist' ),
-					'export-file-name' => __( 'listings-export-data', 'directorist' ),
-					'prepare-export-file-from' => 'directorist_prepare_listings_export_file',
-				];
+            if ( ! empty( $users ) ) {
+                foreach ( $users as $user ) {
+                    $recipient[] = [
+                        'value' => $user->user_email,
+                        'label' => ( ! empty( $user->display_name ) ) ? $user->display_name : $user->user_nicename,
+                    ];
+                }
+            }
 
-				$c = '<b><span style="color:#c71585;">'; //color start
-				$e = '</span></b>'; // end color
-				$description = <<<SWBD
-					You can use the following keywords/placeholder in any of your email bodies/templates or subjects to output dynamic value. **Usage: place the placeholder name between $c == $e and $c == $e . For Example: use {$c}==SITE_NAME=={$e} to output The Your Website Name etc. <br/><br/>
-					{$c}==NAME=={$e} : It outputs The listing owner's display name on the site<br/>
-					{$c}==USERNAME=={$e} : It outputs The listing owner's user name on the site<br/>
-					{$c}==SITE_NAME=={$e} : It outputs your site name<br/>
-					{$c}==SITE_LINK=={$e} : It outputs your site name with link<br/>
-					{$c}==SITE_URL=={$e} : It outputs your site url with link<br/>
-					{$c}==EXPIRATION_DATE=={$e} : It outputs Expiration date<br/>
-					{$c}==CATEGORY_NAME=={$e} : It outputs the category name that is going to expire<br/>
-					{$c}==LISTING_ID=={$e} : It outputs the listing's ID<br/>
-					{$c}==RENEWAL_LINK=={$e} : It outputs a link to renewal page<br/>
-					{$c}==LISTING_TITLE=={$e} : It outputs the listing's title<br/>
-					{$c}==LISTING_LINK=={$e} : It outputs the listing's title with link<br/>
-					{$c}==LISTING_URL=={$e} : It outputs the listing's url with link<br/>
-					{$c}==ORDER_ID=={$e} : It outputs the order id. It should be used for order related email only<br/>
-					{$c}==ORDER_RECEIPT_URL=={$e} : It outputs a link to the order receipt page. It should be used for order related email only<br/>
-					{$c}==ORDER_DETAILS=={$e} : It outputs order detailsc. It should be used for order related email only<br/>
-					{$c}==TODAY=={$e} : It outputs the current date<br/>
-					{$c}==NOW=={$e} : It outputs the current time<br/>
-					{$c}==DASHBOARD_LINK=={$e} : It outputs the user dashboard page link<br/>
-					{$c}==USER_PASSWORD=={$e} : It outputs new user's temporary passoword<br/><br/>
-					Additionally, you can also use HTML tags in your template.
+            $fields['announcement'] = [
+                'type'                       => 'ajax-action',
+                'action'                     => 'atbdp_send_announcement',
+                'label'                      => '',
+                'button-label'               => 'Send',
+                'button-label-on-processing' => '<i class="fas fa-circle-notch fa-spin"></i> Sending',
+                'option-fields' => [
+                    'to' => [
+                        'type' => 'select',
+                        'label' => 'To',
+                        'options' => [
+                            [ 'value' => 'all_user', 'label' => 'All User' ],
+                            [ 'value' => 'selected_user', 'label' => 'Selected User' ],
+                        ],
+                        'value' => 'all_user',
+                    ],
+                    'recipient' => [
+                        'type'    => 'checkbox',
+                        'label'   => 'Recipients',
+                        'options' => $recipient,
+                        'value'   => '',
+                        'show-if' => [
+                            'where' => "self.to",
+                            'conditions' => [
+                                ['key' => 'value', 'compare' => '=', 'value' => 'selected_user'],
+                            ],
+                        ],
+                    ],
+                    'subject' => [
+                        'type'  => 'text',
+                        'label' => 'Subject',
+                        'value' => '',
+                    ],
+                    'message' => [
+                        'type'        => 'textarea',
+                        'label'       => 'Message',
+                        'description' => 'Maximum 400 characters are allowed',
+                        'value'       => '',
+                    ],
+                    'expiration' => [
+                        'type'  => 'range',
+                        'min'   => '0',
+                        'max'   => '365',
+                        'label' => 'Expires in Days',
+                        'value' => 0,
+                    ],
+                    'send_to_email' => [
+                        'type'  => 'toggle',
+                        'label' => 'Send a copy to email',
+                        'value' => true,
+                    ],
+                ],
+                'value' => '',
+                'save-option-data' => false,
+            ];
+
+            $fields['listing_import_button'] = [
+                'type'            => 'button',
+                'url'             => admin_url( 'edit.php?post_type=at_biz_dir&page=tools' ),
+                'open-in-new-tab' => true,
+                'label'           => __( 'Import Listings', 'directorist' ),
+                'button-label'    => __( 'Run Importer', 'directorist' ),
+            ];
+
+            $fields['listing_export_button'] = [
+                'type'             => 'export-data',
+                'label'            => __( 'Export Listings', 'directorist' ),
+                'button-label'     => __( 'Export', 'directorist' ),
+                'export-file-name' => __( 'listings-export-data', 'directorist' ),
+                'prepare-export-file-from' => 'directorist_prepare_listings_export_file',
+            ];
+
+            $c = '<b><span style="color:#c71585;">'; //color start
+            $e = '</span></b>'; // end color
+            $description = <<<SWBD
+                You can use the following keywords/placeholder in any of your email bodies/templates or subjects to output dynamic value. **Usage: place the placeholder name between $c == $e and $c == $e . For Example: use {$c}==SITE_NAME=={$e} to output The Your Website Name etc. <br/><br/>
+                {$c}==NAME=={$e} : It outputs The listing owner's display name on the site<br/>
+                {$c}==USERNAME=={$e} : It outputs The listing owner's user name on the site<br/>
+                {$c}==SITE_NAME=={$e} : It outputs your site name<br/>
+                {$c}==SITE_LINK=={$e} : It outputs your site name with link<br/>
+                {$c}==SITE_URL=={$e} : It outputs your site url with link<br/>
+                {$c}==EXPIRATION_DATE=={$e} : It outputs Expiration date<br/>
+                {$c}==CATEGORY_NAME=={$e} : It outputs the category name that is going to expire<br/>
+                {$c}==LISTING_ID=={$e} : It outputs the listing's ID<br/>
+                {$c}==RENEWAL_LINK=={$e} : It outputs a link to renewal page<br/>
+                {$c}==LISTING_TITLE=={$e} : It outputs the listing's title<br/>
+                {$c}==LISTING_LINK=={$e} : It outputs the listing's title with link<br/>
+                {$c}==LISTING_URL=={$e} : It outputs the listing's url with link<br/>
+                {$c}==ORDER_ID=={$e} : It outputs the order id. It should be used for order related email only<br/>
+                {$c}==ORDER_RECEIPT_URL=={$e} : It outputs a link to the order receipt page. It should be used for order related email only<br/>
+                {$c}==ORDER_DETAILS=={$e} : It outputs order detailsc. It should be used for order related email only<br/>
+                {$c}==TODAY=={$e} : It outputs the current date<br/>
+                {$c}==NOW=={$e} : It outputs the current time<br/>
+                {$c}==DASHBOARD_LINK=={$e} : It outputs the user dashboard page link<br/>
+                {$c}==USER_PASSWORD=={$e} : It outputs new user's temporary passoword<br/><br/>
+                Additionally, you can also use HTML tags in your template.
 SWBD;
 
-				$fields['email_note'] = [
-					'type'        => 'note',
-					'title'       => 'You can use Placeholders to output dynamic value',
-					'description' => $description,
-				];
+            $fields['email_note'] = [
+                'type'        => 'note',
+                'title'       => 'You can use Placeholders to output dynamic value',
+                'description' => $description,
+            ];
 
 
-				// Map Country Restriction Field
-				$fields['country_restriction'] = [
-					'type'  => 'toggle',
-					'label' => __('Country Restriction', 'directorist'),
-					'value' => false,
-					'show-if' => [
-						'where' => "select_listing_map",
-						'conditions' => [
-							['key' => 'value', 'compare' => '=', 'value' => 'google'],
-						],
-					],
-				];
+            // Map Country Restriction Field
+            $fields['country_restriction'] = [
+                'type'  => 'toggle',
+                'label' => __('Country Restriction', 'directorist'),
+                'value' => false,
+                'show-if' => [
+                    'where' => "select_listing_map",
+                    'conditions' => [
+                        ['key' => 'value', 'compare' => '=', 'value' => 'google'],
+                    ],
+                ],
+            ];
 
-				$countries = atbdp_country_code_to_name();
-				$items = array();
+            $countries = atbdp_country_code_to_name();
+            $items = array();
 
-				foreach ($countries as $country => $code) {
-					$items[] = array(
-						'value' => $country,
-						'label' => $code,
-					);
-				}
+            foreach ($countries as $country => $code) {
+                $items[] = array(
+                    'value' => $country,
+                    'label' => $code,
+                );
+            }
 
-				$fields['restricted_countries'] = [
-					'type'    => 'checkbox',
-					'label'   => __('Select Countries', 'directorist'),
-					'options' => $items,
-					'value'   => '',
-					'show-if' => [
-						'where' => "country_restriction",
-						'conditions' => [
-							['key' => 'value', 'compare' => '=', 'value' => true],
-						],
-					],
-				];
-
-
-				// Single Listings
-				$fields['submission_confirmation'] = [
-					'type'  => 'toggle',
-					'label' => __('Show Submission Confirmation', 'directorist'),
-					'value' => true,
-				];
-
-				$fields['pending_confirmation_msg'] = [
-					'type'  => 'textarea',
-					'label' => __('Pending Confirmation Message', 'directorist'),
-					'value' => __('Thank you for your submission. Your listing is being reviewed and it may take up to 24 hours to complete the review.', 'directorist'),
-					'show-if' => [
-						'where' => "submission_confirmation",
-						'conditions' => [
-							['key' => 'value', 'compare' => '=', 'value' => true],
-						],
-					],
-				];
-
-				$fields['publish_confirmation_msg'] = [
-					'type'  => 'textarea',
-					'label' => __('Publish Confirmation Message', 'directorist'),
-					'value' => __('Congratulations! Your listing has been approved/published. Now it is publicly available.', 'directorist'),
-					'show-if' => [
-						'where' => "submission_confirmation",
-						'conditions' => [
-							['key' => 'value', 'compare' => '=', 'value' => true],
-						],
-					],
-				];
+            $fields['restricted_countries'] = [
+                'type'    => 'checkbox',
+                'label'   => __('Select Countries', 'directorist'),
+                'options' => $items,
+                'value'   => '',
+                'show-if' => [
+                    'where' => "country_restriction",
+                    'conditions' => [
+                        ['key' => 'value', 'compare' => '=', 'value' => true],
+                    ],
+                ],
+            ];
 
 
-				return $fields;
-			});
-		}
+            // Single Listings
+            $fields['submission_confirmation'] = [
+                'type'  => 'toggle',
+                'label' => __('Show Submission Confirmation', 'directorist'),
+                'value' => true,
+            ];
+
+            $fields['pending_confirmation_msg'] = [
+                'type'  => 'textarea',
+                'label' => __('Pending Confirmation Message', 'directorist'),
+                'value' => __('Thank you for your submission. Your listing is being reviewed and it may take up to 24 hours to complete the review.', 'directorist'),
+                'show-if' => [
+                    'where' => "submission_confirmation",
+                    'conditions' => [
+                        ['key' => 'value', 'compare' => '=', 'value' => true],
+                    ],
+                ],
+            ];
+
+            $fields['publish_confirmation_msg'] = [
+                'type'  => 'textarea',
+                'label' => __('Publish Confirmation Message', 'directorist'),
+                'value' => __('Congratulations! Your listing has been approved/published. Now it is publicly available.', 'directorist'),
+                'show-if' => [
+                    'where' => "submission_confirmation",
+                    'conditions' => [
+                        ['key' => 'value', 'compare' => '=', 'value' => true],
+                    ],
+                ],
+            ];
+
+            return $fields;
+        }
 
 		// get_simple_data_content
 		public function get_simple_data_content( array $args = [] ) {
@@ -311,20 +323,6 @@ SWBD;
 		// handle_save_settings_data_request
 		public function handle_save_settings_data_request()
 		{
-			// wp_send_json([
-			//     'status' => false,
-			//     'active_gateways' => $_POST['active_gateways'],
-			//     'active_gateways_decoded' => $this->maybe_json( $_POST['active_gateways'] ),
-			//     'active_gateways_decoded_type' => gettype( $this->maybe_json( $_POST['active_gateways'] ) ),
-			//     'status_log' => [
-			//         'name_is_missing' => [
-			//             'type' => 'error',
-			//             'message' => 'Debugging',
-			//         ],
-			//     ],
-			// ], 200 );
-
-
 			$status = [ 'success' => false, 'status_log' => [] ];
 			$field_list = ( ! empty( $_POST['field_list'] ) ) ? $this->maybe_json( $_POST['field_list'] ) : [];
 
@@ -364,12 +362,9 @@ SWBD;
 				return [ 'status' => $status ];
 			}
 
-
 			// Update the options
 			$atbdp_options = get_option('atbdp_option');
 			foreach ( $options as $option_key => $option_value ) {
-				if ( ! isset( $this->fields[ $option_key ] ) ) { continue; }
-
 				$atbdp_options[ $option_key ] = $this->maybe_json( $option_value );
 			}
 
@@ -5191,6 +5186,9 @@ Please remember that your order may be canceled if you do not make your payment 
         // menu_page_callback__settings_manager
         public function menu_page_callback__settings_manager()
         {
+            // Prepare Settings
+            $this->prepare_settings();
+
             // Get Saved Data
             $atbdp_options = get_option('atbdp_option');
 
