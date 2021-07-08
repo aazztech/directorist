@@ -2539,6 +2539,92 @@ Please remember that your order may be canceled if you do not make your payment 
                         ],
                     ],
                 ],
+                // all authors settings
+                'all_authors_columns' => [
+                    'label'         => __('Number of Columns', 'directorist'),
+                    'type'          => 'number',
+                    'value'         => '3',
+                    'min'           => '1',
+                    'max'           => '6',
+                    'step'          => '1',
+                ],
+                'all_authors_sorting' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Alphabet Sorting', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_image' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Image', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_name' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Name', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_role' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Roles', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_select_role' => [
+                    'label' => __('Select Role', 'directorist'),
+                    'type'  => 'select',
+                    'value' => 'all',
+                    'options' => $this->get_user_roles(),
+                    'show-if' => [
+                        'where' => "all_authors_role",
+                        'conditions' => [
+                            ['key' => 'value', 'compare' => '=', 'value' => true],
+                        ],
+                    ],
+                ],
+                'all_authors_info' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Contact Info', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_description' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Description', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_description_limit' => [
+                    'label'         => __('Description Word Limit', 'directorist'),
+                    'type'          => 'number',
+                    'value'         => '13',
+                    'min'           => '1',
+                    'max'           => '50',
+                    'step'          => '1',
+                    'show-if' => [
+                        'where' => "all_authors_description",
+                        'conditions' => [
+                            ['key' => 'value', 'compare' => '=', 'value' => true],
+                        ],
+                    ],
+                ],
+                'all_authors_social_info' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display Social Info', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_button' => [
+                    'type'  => 'toggle',
+                    'label' => __('Display All Listings Button', 'directorist'),
+                    'value' => true,
+                ],
+                'all_authors_button_text'  => [
+                    'type'          => 'text',
+                    'label'         => __('All Listings Button text', 'directorist'),
+                    'value'         => __('View All Listings', 'directorist'),
+                    'show-if' => [
+                        'where' => "all_authors_button",
+                        'conditions' => [
+                            ['key' => 'value', 'compare' => '=', 'value' => true],
+                        ],
+                    ],
+                ],
                 // search form settings
                 'search_title'    => [
                     'type'          => 'text',
@@ -4712,6 +4798,19 @@ Please remember that your order may be canceled if you do not make your payment 
                                 ],
                             ] ),
                         ],
+                        'all_authors' => [
+                            'label' => __('All Authors', 'directorist'),
+                            'icon' => '<i class="fa fa-chart-bar"></i>',
+                            'sections' => apply_filters( 'atbdp_listing_settings_user_dashboard_sections', [
+                                'all_authors' => [
+                                    'title'       => __('All Authors', 'directorist'),
+                                    'description' => '',
+                                    'fields'      => [
+                                        'all_authors_columns', 'all_authors_sorting', 'all_authors_image', 'all_authors_name', 'all_authors_role', 'all_authors_select_role', 'all_authors_info', 'all_authors_description', 'all_authors_description_limit', 'all_authors_social_info', 'all_authors_button', 'all_authors_button_text'
+                                        ],
+                                ],
+                            ] ),
+                        ],
                     ]),
                 ],
 
@@ -5211,6 +5310,23 @@ Please remember that your order may be canceled if you do not make your payment 
             }
 
             return $pages_options;
+        }
+
+        function get_user_roles() 
+        {
+            $get_editable_roles = get_editable_roles();
+            $role               = array();
+            $role[]             = array( 'value' => 'all', 'label' => __( 'All', 'directorist' ) );
+            if( $get_editable_roles ) {
+                foreach( $get_editable_roles as $key => $value ) {
+                    $role[] = array( 
+                        'value' => $key,
+                        'label' => $value['name']
+                    );
+                }
+            }
+
+            return $role;
         }
 
         /**

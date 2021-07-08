@@ -1,0 +1,112 @@
+
+/* Directorist all authors card */
+.directorist-authors-section{
+    position: relative;
+}
+.directorist-content-active{
+    .directorist-authors{
+        @include e(nav){
+            margin-bottom: 30px;
+            ul{
+                list-style-type: none;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                li{
+                    list-style: none;
+                    a{
+                        display: block;
+                        line-height: 20px;
+                        padding: 0 17px 10px;
+                        border-bottom: 2px solid transparent;
+                        font-size: 15px;
+                        font-weight: 500;
+                        text-transform: uppercase;
+                        box-shadow: none;
+                    }
+                    &.active{
+                        a{
+                            border-bottom-color: $primary;
+                        }
+                    }
+                }
+            }
+        }
+
+        @include e(card){
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fff;
+            @include e(img){
+                margin-bottom: 15px;
+                img{
+                    border-radius: 10px;
+                    width: 100%;
+                }
+            }
+            h2{
+                font-size: 18px;
+                font-weight: 500;
+                margin: 0 0 5px 0 !important;
+                line-height: normal;
+                &:before{
+                    content: none;
+                }
+            }
+            h3{
+                font-size: 14px;
+                font-weight: 400;
+                color: #8F8E9F;
+                margin: 0 0 15px 0 !important;
+                line-height: normal;
+                text-transform: none;
+                letter-spacing: normal;
+            }
+            @include e(info-list){
+                list-style-type: none;
+                margin-bottom: 15px !important;
+                li{
+                    font-size: 14px;
+                    color: #767792;
+                    list-style: none;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                    display: flex;
+                    &:not(:last-child){
+                        margin-bottom: 2px;
+                    }
+                    a{
+                        color: #767792;
+                        border: 0 none;
+                        box-shadow: none;
+                    }
+                    i{
+                       width: 16px;
+                       font-size: 16px;
+                       display: inline-block;
+                       margin-right: 5px;
+                       margin-top: 3px;
+                    }
+                }
+            }
+            .directorist-author-social{
+                margin:-5px -5px 15px;
+                a{
+                    border: 0 none;
+                    box-shadow: none;
+                }
+            }
+            p{
+                font-size: 14px;
+                color: #767792;
+                margin-bottom: 20px;
+            }
+            .directorist-btn{
+                border: 0 none;
+                box-shadow: none;
+            }
+        }
+    }
+}

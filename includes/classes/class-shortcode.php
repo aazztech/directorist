@@ -35,6 +35,7 @@ class ATBDP_Shortcode {
 	
 				// Author
 				'directorist_author_profile' => [ $this, 'author_profile' ],
+				'directorist_all_authors' 	 => [ $this, 'author_archive' ],
 				'directorist_user_dashboard' => [ $this, 'user_dashboard' ],
 	
 				// Forms
@@ -209,6 +210,15 @@ class ATBDP_Shortcode {
 		$atts[ 'shortcode' ] = 'directorist_author_profile';
 
 		return $author->render_shortcode_author_profile($atts);
+	}
+
+	public function author_archive( $atts ) {
+		$atts = !empty( $atts ) ? $atts : array();
+		$author = Directorist_Listing_Author::instance();
+
+		$atts[ 'shortcode' ] = 'directorist_members';
+
+		return $author->render_shortcode_author_archive($atts);
 	}
 
 	public function user_dashboard( $atts ) {

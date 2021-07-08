@@ -28,6 +28,7 @@ import './components/atbdDropdown';
 import './components/atbdSelect';
 import './components/loc_cat';
 import './components/legacy-support';
+import './components/author';
 
 // Dashboard Js
 import './components/dashboard/dashboardSidebar';

@@ -8737,7 +8737,18 @@ for shortable field*/
 
 /* Directorist button styles */
 .directorist-btn {
-  display: inline-block;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   font-size: 15px;
   font-weight: 500;
   color: #202428;
@@ -8748,12 +8759,15 @@ for shortable field*/
       -ms-user-select: none;
           user-select: none;
   cursor: pointer;
-  padding: 0 26px;
-  line-height: 2.95;
+  padding: 11px 26px;
+  min-height: 45px;
+  line-height: 1.5;
   border-radius: 5px;
   background: #EEF1F3;
   border-color: transparent;
   text-decoration: none;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 .directorist-btn:focus {
   outline: 0 !important;
@@ -8844,16 +8858,22 @@ for shortable field*/
 }
 
 .directorist-btn.directorist-btn-lg {
-  line-height: 3.35;
+  min-height: 50px;
 }
 .directorist-btn.directorist-btn-sm {
-  line-height: 2.7;
+  min-height: 40px;
 }
 .directorist-btn.directorist-btn-xs {
-  line-height: 2.3;
+  min-height: 35px;
 }
 .directorist-btn.directorist-btn-px-15 {
   padding: 0 15px;
+}
+.directorist-btn.directorist-btn-block {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 /* Modal Core Styles */
