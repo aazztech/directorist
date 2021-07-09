@@ -529,7 +529,7 @@ class Enqueue_Assets {
 			'ver'            => self::$script_version,
 			'group'          => 'public',                         // public || admin  || global
 			'section'        => '',
-			'enable'         => false,
+			'enable'         => true,
 			'fource_enqueue' => is_singular( ATBDP_POST_TYPE ),
 		];
 

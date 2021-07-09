@@ -511,7 +511,7 @@ $('body').on('submit', formID, function (e) {
                     $('.directorist-form-submit__btn').removeClass('atbd_loading');
                     err_log.listing_gallery = { msg: uploader.uploaders_data['error_msg'] };
                     error_count++;
-                    scrollToEl('#' + uploader.uploaders_data['element_id']);
+                    UIkit2.Utils.scrollToElement($('#' + uploader.uploaders_data['element_id']));
                 }
             }
         }

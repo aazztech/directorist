@@ -641,7 +641,7 @@ $('body').on('submit', formID, function (e) {
               msg: uploader.uploaders_data['error_msg']
             };
             error_count++;
-            scrollToEl('#' + uploader.uploaders_data['element_id']);
+            UIkit2.Utils.scrollToElement($('#' + uploader.uploaders_data['element_id']));
           }
         }
       }
