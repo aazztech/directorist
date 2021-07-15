@@ -92,6 +92,9 @@ if (!class_exists('ATBDP_Ajax_Handler')) :
             add_action('wp_ajax_atbdp_listing_types_form', array( $this, 'atbdp_listing_types_form' ) );
             add_action('wp_ajax_nopriv_atbdp_listing_types_form', array( $this, 'atbdp_listing_types_form' ) );
 
+            add_action('wp_ajax_directorist_category_custom_field_seach', array( $this, 'directorist_category_custom_field_seach' ) );
+            add_action('wp_ajax_nopriv_directorist_category_custom_field_seach', array( $this, 'directorist_category_custom_field_seach' ) );
+
             //dashboard become author
             add_action( 'wp_ajax_atbdp_become_author', array( $this, 'atbdp_become_author' ) );
             add_action( 'wp_ajax_atbdp_user_type_approved', array( $this, 'atbdp_user_type_approved' ) );
@@ -260,6 +263,48 @@ if (!class_exists('ATBDP_Ajax_Handler')) :
                 'search_form'          => $search_form,
                 'atbdp_search_listing' => Directorist\Script_Helper::get_search_script_data( [ 'directory_type_id' => $listing_type_id  ] ),
                 'popular_categories'   => $popular_categories
+             ) );
+        }
+
+        // directorist_category_custom_field_seach
+        public function directorist_category_custom_field_seach() {
+            $listing_type    = !empty( $_POST['listing_type'] ) ? esc_attr( $_POST['listing_type'] ) : '';
+            $term            = get_term_by( 'slug', $listing_type, ATBDP_TYPE );
+            $listing_type_id = ( $term ) ? $term->term_id : 0;
+            $searchform      = new \Directorist\Directorist_Listing_Search_Form( 'search_form', $listing_type_id, [] );
+            $class           = 'directorist-search-form-top directorist-flex directorist-align-center directorist-search-form-inline';
+            // search form
+            ob_start();
+            ?>
+				<div class="<?php echo esc_attr( $class ); ?>">
+                    <?php
+                    foreach ( $searchform->form_data[0]['fields'] as $field ){
+                        $searchform->field_template( $field );
+                    }
+                    if ( $searchform->more_filters_display !== 'always_open' ){
+                        $searchform->more_buttons_template();
+                    }
+                    ?>
+
+                </div>
+
+                <?php
+                if ( $searchform->more_filters_display == 'always_open' ){
+                    $searchform->advanced_search_form_fields_template();
+                }
+                else {
+                    if ($searchform->has_more_filters_button) { ?>
+                        <div class="<?php Helper::search_filter_class( $searchform->more_filters_display ); ?>">
+                            <?php $searchform->advanced_search_form_fields_template();?>
+                        </div>
+                        <?php
+                    }
+                }
+            $search_form =  ob_get_clean();
+
+
+            wp_send_json( array(
+                'search_form'          => $search_form,
              ) );
         }
 

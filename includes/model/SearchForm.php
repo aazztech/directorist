@@ -341,9 +341,31 @@ class Directorist_Listing_Search_Form {
 		return $ptype;
 	}
 
+	// custom field assign to category
+	public function assign_to_category(){
+		$submission_form_fields = get_term_meta( $this->listing_type , 'submission_form_fields', true );
+		$category_id = isset( $_REQUEST['cat_id'] ) ? $_REQUEST['cat_id'] : '';
+		$custom_field_key = array();
+		$assign_to_cat = array();
+
+		if( $submission_form_fields['fields'] ) {
+			foreach( $submission_form_fields['fields'] as $field ) {
+				if( ! empty( $field['assign_to'] ) && $field['assign_to'] == 'category' && $category_id != $field['category'] ) {
+					$custom_field_key[] = $field['field_key'];
+					$assign_to_cat[]	= $field['category'];
+				}
+			}
+		}
+
+		$category_custom_field = array( 
+			'custom_field_key'	=> $custom_field_key,
+			'assign_to_cat'		=> $assign_to_cat,
+		);
+		return $category_custom_field;
+	}
+
 	public function field_template( $field_data ) {
 		$key = $field_data['field_key'];
-
 		if ( $this->is_custom_field( $field_data ) ) {
 			$value = !empty( $_REQUEST['custom_field'][$key] ) ? $_REQUEST['custom_field'][$key] : '';
 		}
@@ -356,8 +378,7 @@ class Directorist_Listing_Search_Form {
 			'data'       		=> $field_data,
 			'value'      		=> $value,
 		);
-
-		if ( $this->is_custom_field( $field_data ) ) {
+		if ( $this->is_custom_field( $field_data ) && ( ! in_array( $field_data['field_key'], $this->assign_to_category()['custom_field_key'] ) ) ) {
 			$template = 'search-form/custom-fields/' . $field_data['widget_name'];
 		}
 		else {
@@ -482,7 +503,8 @@ class Directorist_Listing_Search_Form {
 			'immediate_category' => 0,
 			'active_term_id'     => 0,
 			'ancestors'          => array(),
-			'listing_type'		 => $this->listing_type
+			'listing_type'		 => $this->listing_type,
+			'assign_to_category' => $this->assign_to_category()
 		);
 	}
 
