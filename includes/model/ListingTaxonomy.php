@@ -50,7 +50,7 @@ class Directorist_Listing_Taxonomy {
 		$locations_columns = get_directorist_option('locations_column_number', 3);
 		$locations_show_count = !empty( get_directorist_option('display_location_listing_count', 1 ) ) ? true : false;
 		$locations_hide_empty = !empty( get_directorist_option('hide_empty_locations') ) ? true : false;
-		$atts = shortcode_atts(array(
+		$atts = shortcode_atts( apply_filters( 'directorist_taxonomy_shortcode_attributes', array(
 			'view'                		  => ( 'category' == $type ) ? $categories_view : $locations_view ,
 			'orderby'            		  => ( 'category' == $type ) ? $categories_orderby : $locations_orderby,
 			'order'              		  => ( 'category' == $type ) ? $categories_order : $locations_order,
@@ -62,7 +62,7 @@ class Directorist_Listing_Taxonomy {
 			'redirect_page_url'   		  => '',
 			'directory_type'	  		  => '',
 			'default_directory_type'	  => '',
-		), $atts);
+		) ), $atts);
 		
 		$this->atts                = $atts;
 		$this->type                = $type;
