@@ -60,7 +60,9 @@ $avatar_img = get_avatar($author_id, 32);
 					<?php if ( $phone = $listing->author_info( 'phone' ) ): ?>
 						<li>
 							<span class="<?php atbdp_icon_type(true);?>-phone"></span>
-							<span class="directorist-single-author-contact-info-text"><a href="tel:<?php Helper::formatted_tel( $phone ); ?>"><?php echo esc_html( $phone ); ?></a></span>
+							<span class="directorist-single-author-contact-info-text">
+								<a href="tel:<?php Helper::formatted_tel( $phone ); ?>"><?php echo esc_html( $phone ); ?></a>
+							</span>
 						</li>
 					<?php endif; ?>
 
@@ -82,6 +84,7 @@ $avatar_img = get_avatar($author_id, 32);
 			</div>
 
 			<?php if ( $listing->author_has_socials() ): ?>
+				
 				<ul class="directorist-author-social">
 					<?php
 					if ( $facebook = $listing->author_info( 'facebook' ) ) {
@@ -94,7 +97,7 @@ $avatar_img = get_avatar($author_id, 32);
 						printf('<li class="directorist-author-social-item"><a target="_blank" href="%s"><span class="'.atbdp_icon_type().'-linkedin"></span></a></li>', $linkedin);
 					}
 					if ( $youtube = $listing->author_info( 'youtube' ) ) {
-						printf('<li class="directorist-author-social-item"><a target="_blank" href="%s"><span class="'.atbdp_icon_type().'-youtube"></span></a></li class="directorist-author-social-item">', $youtube);
+						printf('<li class="directorist-author-social-item"><a target="_blank" href="%s"><span class="'.atbdp_icon_type().'-youtube"></span></a></li>', $youtube);
 					}
 					?>
 				</ul>

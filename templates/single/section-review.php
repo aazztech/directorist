@@ -23,7 +23,11 @@ $review_content = $listing->current_review() ? $listing->current_review()->conte
 
 		<div class="directorist-card__header directorist-flex directorist-align-center directorist-justify-content-between">
 
-			<h4 class="directorist-card__header--title"><span class="<?php atbdp_icon_type( true ); ?>-star"></span><span id="directorist-review-counter"><?php echo esc_html( $listing->review_count() ); ?></span> <?php echo esc_html( $listing->review_count_text() );?></h4>
+			<h4 class="directorist-card__header--title">
+				<span class="<?php atbdp_icon_type( true ); ?>-star"></span>
+				<span id="directorist-review-counter"><?php echo esc_html( $listing->review_count() ); ?></span>
+				<?php echo esc_html( $listing->review_count_text() );?>
+			</h4>
 
 			<?php if ( atbdp_logged_in_user() || $listing->guest_review_enabled() ): ?>
 				<label for="review_content" class="directorist-btn directorist-btn-primary directorist-btn-xs directorist-btn-add-review"><?php esc_html_e( 'Add a review', 'directorist' ); ?></label>
@@ -47,7 +51,10 @@ $review_content = $listing->current_review() ? $listing->current_review()->conte
 			<div class="directorist-card directorist-card-rating-block">
 
 				<div class="directorist-card__header">
-					<h4 class="directorist-card__header--title"><span class="<?php atbdp_icon_type( true ); ?>-star" aria-hidden="true"></span><?php echo $listing->current_review() ? esc_html__( 'Update Review', 'directorist' ) : esc_html__( 'Leave a Review', 'directorist' ); ?></h4>
+					<h4 class="directorist-card__header--title">
+						<span class="<?php atbdp_icon_type( true ); ?>-star" aria-hidden="true"></span>
+						<?php echo $listing->current_review() ? esc_html__( 'Update Review', 'directorist' ) : esc_html__( 'Leave a Review', 'directorist' ); ?>
+					</h4>
 				</div>
 
 				<div class="directorist-card__body directorist-review-area">

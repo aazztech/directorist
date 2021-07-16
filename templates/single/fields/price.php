@@ -15,6 +15,7 @@ if ( !Helper::has_price_range( $id ) && !Helper::has_price( $id ) ) {
 	return;
 }
 ?>
+
 <div class="directorist-info-item directorist-pricing-meta directorist-info-item-price">
 	<?php
 	if ( 'range' === Helper::pricing_type( $id ) ) {
