@@ -166,12 +166,190 @@ $('.cptm-file-field').on('change', function (e) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_utility__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/utility */ "./assets/src/js/global/components/utility.js");
-/* harmony import */ var _components_utility__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_components_utility__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/modal */ "./assets/src/js/global/components/modal.js");
-/* harmony import */ var _components_modal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_modal__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _lib_helper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../lib/helper */ "./assets/src/js/lib/helper.js");
+/* harmony import */ var _components_utility__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/utility */ "./assets/src/js/global/components/utility.js");
+/* harmony import */ var _components_utility__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_utility__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_modal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/modal */ "./assets/src/js/global/components/modal.js");
+/* harmony import */ var _components_modal__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_modal__WEBPACK_IMPORTED_MODULE_2__);
 
 
+
+var $ = jQuery;
+window.addEventListener('load', initSelect2);
+document.body.addEventListener('directorist-search-form-nav-tab-reloaded', initSelect2);
+document.body.addEventListener('directorist-reload-select2-fields', initSelect2); // Select 2
+
+function initSelect2() {
+  var select_fields = [{
+    elm: $('.directorist-select').find('select')
+  }, {
+    elm: $('#directorist-select-js')
+  }, {
+    elm: $('#directorist-search-category-js')
+  }, {
+    elm: $('#directorist-search-select-js')
+  }, {
+    elm: $('#directorist-select-st-s-js')
+  }, {
+    elm: $('#directorist-select-sn-s-js')
+  }, {
+    elm: $('#directorist-select-mn-e-js')
+  }, {
+    elm: $('#directorist-select-tu-e-js')
+  }, {
+    elm: $('#directorist-select-wd-s-js')
+  }, {
+    elm: $('#directorist-select-wd-e-js')
+  }, {
+    elm: $('#directorist-select-th-e-js')
+  }, {
+    elm: $('#directorist-select-fr-s-js')
+  }, {
+    elm: $('#directorist-select-fr-e-js')
+  }, {
+    elm: $('#directorist-location-select')
+  }, {
+    elm: $('#directorist-category-select')
+  }, {
+    elm: $('.select-basic')
+  }, {
+    elm: $('#loc-type')
+  }, {
+    elm: $('.bdas-location-search')
+  }, {
+    elm: $('.directorist-location-select')
+  }, {
+    elm: $('#at_biz_dir-category')
+  }, {
+    elm: $('#cat-type')
+  }, {
+    elm: $('.bdas-category-search')
+  }, {
+    elm: $('.directorist-category-select')
+  }];
+  select_fields.forEach(function (field) {
+    Object(_lib_helper__WEBPACK_IMPORTED_MODULE_0__["convertToSelect2"])(field);
+  });
+}
+
+/***/ }),
+
+/***/ "./assets/src/js/lib/helper.js":
+/*!*************************************!*\
+  !*** ./assets/src/js/lib/helper.js ***!
+  \*************************************/
+/*! exports provided: get_dom_data, convertToSelect2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get_dom_data", function() { return get_dom_data; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "convertToSelect2", function() { return convertToSelect2; });
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
+
+var $ = jQuery;
+
+function get_dom_data(key) {
+  var dom_content = document.body.innerHTML;
+
+  if (!dom_content.length) {
+    return '';
+  }
+
+  var pattern = new RegExp("(<!-- directorist-dom-data::" + key + "\\s)(.+)(\\s-->)");
+  var terget_content = pattern.exec(dom_content);
+
+  if (!terget_content) {
+    return '';
+  }
+
+  if (typeof terget_content[2] === 'undefined') {
+    return '';
+  }
+
+  var dom_data = JSON.parse(terget_content[2]);
+
+  if (!dom_data) {
+    return '';
+  }
+
+  return dom_data;
+}
+
+function convertToSelect2(field) {
+  if (!field) {
+    return;
+  }
+
+  if (!field.elm) {
+    return;
+  }
+
+  if (!field.elm.length) {
+    return;
+  }
+
+  var default_args = {
+    allowClear: true,
+    width: '100%',
+    templateResult: function templateResult(data) {
+      // We only really care if there is an element to pull classes from
+      if (!data.element) {
+        return data.text;
+      }
+
+      var $element = $(data.element);
+      var $wrapper = $('<span></span>');
+      $wrapper.addClass($element[0].className);
+      $wrapper.text(data.text);
+      return $wrapper;
+    }
+  };
+  var args = field.args && _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(field.args) === 'object' ? Object.assign(default_args, field.args) : default_args;
+  var options = field.elm.find('option');
+  var placeholder = options.length ? options[0].innerHTML : '';
+
+  if (placeholder.length) {
+    args.placeholder = placeholder;
+  }
+
+  field.elm.select2(args);
+}
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/typeof.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+
+    module.exports["default"] = module.exports, module.exports.__esModule = true;
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+
+    module.exports["default"] = module.exports, module.exports.__esModule = true;
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
 
 /***/ }),
 

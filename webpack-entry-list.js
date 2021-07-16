@@ -40,7 +40,6 @@ module.exports = {
         ['global-markerclusterer']: ["./assets/src/js/global/map-scripts/markerclusterer.js"],
 
         ['global-directorist-plupload']: "./assets/src/js/global/directorist-plupload.js",
-        ['global-pure-select']: ["./assets/src/js/global/pureScriptSearchSelect.js"],
     },
 
     vueEntries: {

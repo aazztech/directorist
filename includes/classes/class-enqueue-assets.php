@@ -729,13 +729,6 @@ class Enqueue_Assets {
 			'enable'  => Script_Helper::is_enable_map( 'google' ),
 		];
 
-		$scripts['directorist-pure-select-public'] = [
-			'file_name' => 'global-pure-select',
-			'base_path' => DIRECTORIST_JS,
-			'ver'       => self::$script_version,
-			'group'     => 'public', // public || admin  || global
-		];
-
 		$scripts = array_merge( self::$js_scripts, $scripts);
 		self::$js_scripts = $scripts;
 	}
